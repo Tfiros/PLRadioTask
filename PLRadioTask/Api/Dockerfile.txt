@@ -1,0 +1,23 @@
+# Etap 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+#Kopiuj pliki i przywróć zależności
+COPY *.sln .
+COPY Api/*.csproj ./Api/
+COPY Application/*.csproj ./Application/
+COPY Domain/*.csproj ./Domain/
+COPY Infrastructure/*.csproj ./Infrastructure/
+
+RUN dotnet restore
+
+#Kopiuj resztę kodu i zbuduj
+COPY . .
+RUN dotnet publish Api/Api.csproj -c Release -o /app/publish
+
+#Etap 2: Run
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Api.dll"]
