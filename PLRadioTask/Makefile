@@ -2,7 +2,7 @@
 API_PROJECT=Api/Api.csproj
 TEST_PROJECT=Tests/Tests.csproj
 
-# 🧱 Budowanie
+# Budowanie
 build:
 	dotnet build $(API_PROJECT)
 
